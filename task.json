@@ -1,0 +1,26 @@
+{
+  "name": "process1",
+  "id": "9af9b938-12e3-47c3-bff7-880d723d1730",
+  "current_status": "SCHEDULED",
+  "status_history": [],
+  "timing": "1/10 * * * * *",
+  "tasks": [
+    {
+      "Script": {
+        "command": "C:\\Users\\jacob\\Desktop\\rusttres\\target\\release\\rusttres.exe",
+        "env": "C:\\Users\\jacob\\Desktop\\rusttres"
+      }
+    },
+    {
+      "Email": {
+        "to": [
+          "abc@gmail.com",
+          "admin@admin.com"
+        ],
+        "from": "ME",
+        "subject": "Test Subject!",
+        "body": "Some Option conditional message"
+      }
+    }
+  ]
+}
