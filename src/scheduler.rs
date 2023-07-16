@@ -17,7 +17,7 @@ impl<'a> Scheduler<'a> {
     }
 
     pub async fn add_process(&mut self, process: Arc<Mutex<Process>>) {
-        let time_clone = process.lock().unwrap().timing.clone();
+        let time_clone = process.lock().unwrap().timing_cron.clone();
         let process_clone = process.clone();
 
         self.scheduler.add(job_scheduler::Job::new(

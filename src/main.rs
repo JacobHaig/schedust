@@ -10,21 +10,24 @@
 // use std::sync::Arc;
 // use std::sync::Mutex;
 
+mod process;
+mod scheduler;
+mod server;
+mod tasks;
+
 use std::{fs::File, time::Duration};
 
 use scheduler::Processes;
 
 use process::Process;
-use task::{Email, ParallelTask, Print};
 
-use crate::task::{PrintVariable, SetVariable};
+use crate::tasks::{
+    email::EmailTask, parrallel::ParallelTask, print::PrintTask, script::ScriptTask,
+    sequential::SequentialTask, Task,
+};
+
 // use task::Task;
 // use once_cell::sync::Lazy;
-
-mod process;
-mod scheduler;
-mod server;
-mod task;
 
 // static mut RUNNING: Lazy<bool> = Lazy::new(|| true);
 
@@ -47,56 +50,51 @@ async fn main() {
     println!("Exiting...");
     */
 
+    // let a = tasks::print::Print::new("Hello");
+
     // Create a new task
     let process1 = Process::new(
-        "process1".to_string(),
-        "1/10 * * * * *".into(),
-        vec![
-            // Script::new_task(
-            //     r"C:\Users\jacob\Desktop\rusttres\target\release\rusttres.exe".into(),
-            //     r"C:\Users\jacob\Desktop\rusttres".into(),
-            // ),
-            Email::new_task(
-                vec!["abc@gmail.com".into(), "admin@admin.com".into()],
-                "ME".into(),
-                "Test Subject!".into(),
-                "Some Optional conditional message".into(),
-            ),
-            Print::new_task(r"Completed Process1!".into()),
-        ],
-    );
+        "process1",
+        "1/10 * * * * *",
+        "local",
+        Task::Sequential(SequentialTask::new(vec![
+            Task::Print(PrintTask::new("SENDING EMAIL")).to_ref(),
+            Task::Email(EmailTask::new(
+                vec!["abc@gmail.com", "admin@admin.com"],
+                "ME",
+                "Test Subject!",
+                "Some Optional conditional message",
+            ))
+            .to_ref(),
+            Task::Print(PrintTask::new("Completed Process1!")).to_ref(),
+        ]))
+        .to_ref(),
+    )
+    .to_ref();
 
     let process2 = Process::new(
-        "process2".to_string(),
-        "1/3 * * * * *".into(),
-        vec![
-            SetVariable::new_task("money!".into(), "No!".into()),
-            ParallelTask::new_task(vec![
-                Print::new_task("Hello".into()),
-                Print::new_task("World".into()),
-                Print::new_task("1".into()),
-                Print::new_task("2".into()),
-                Print::new_task("3".into()),
-                Print::new_task("4".into()),
-                Print::new_task("5".into()),
-                Print::new_task("6".into()),
-                Print::new_task("7".into()),
-                Print::new_task("8".into()),
-                Print::new_task("9".into()),
-            ]),
-            SetVariable::new_task("money!".into(), "Yeah!".into()),
-            // Script::new_task(
-            //     r"C:\Users\jacob\Desktop\rusttres\target\release\rusttres.exe".into(),
-            //     r"C:\Users\jacob\Desktop\rusttres".into(),
-            // ),
-            // Script::new_task(
-            //     r"C:\Users\jacob\Desktop\rusttres\target\release\rusttres.exe".into(),
-            //     r"C:\Users\jacob\Desktop\rusttres".into(),
-            // ),
-            PrintVariable::new_task("money!".into()),
-            Print::new_task(r"Completed Process2!".into()),
-        ],
-    );
+        "process2",
+        "1/3 * * * * *",
+        "local",
+        Task::Sequential(SequentialTask::new(vec![
+            Task::Print(PrintTask::new("Starting Process2")).to_ref(),
+            Task::Parallel(ParallelTask::new(vec![
+                Task::Print(PrintTask::new("1")).to_ref(),
+                Task::Print(PrintTask::new("2")).to_ref(),
+                Task::Print(PrintTask::new("3")).to_ref(),
+                Task::Print(PrintTask::new("4")).to_ref(),
+                Task::Print(PrintTask::new("5")).to_ref(),
+                Task::Print(PrintTask::new("6")).to_ref(),
+                Task::Print(PrintTask::new("7")).to_ref(),
+                Task::Print(PrintTask::new("8")).to_ref(),
+                Task::Print(PrintTask::new("9")).to_ref(),
+            ]))
+            .to_ref(),
+            Task::Print(PrintTask::new("Completed Process2!")).to_ref(),
+        ]))
+        .to_ref(),
+    )
+    .to_ref();
 
     // Create a new scheduler
     let mut scheduler = scheduler::Scheduler::new().await;

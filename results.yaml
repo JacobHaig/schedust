@@ -2,57 +2,52 @@
   id: 00000000-0000-0000-0000-000000000000
   current_status: Scheduled
   status_history: []
-  timing: 1/10 * * * * *
+  agent: local
+  timing_cron: 1/10 * * * * *
   variables: {}
-  tasks:
-  - !Email
-    to:
-    - abc@gmail.com
-    - admin@admin.com
-    from: ME
-    subject: Test Subject!
-    body: Some Optional conditional message
-  - !Print
-    message: Completed Process1!
+  task: !Sequential
+    tasks:
+    - !Print
+      message: SENDING EMAIL
+    - !Email
+      to:
+      - abc@gmail.com
+      - admin@admin.com
+      from: ME
+      subject: Test Subject!
+      body: Some Optional conditional message
+    - !Print
+      message: Completed Process1!
 - name: process2
   id: 00000000-0000-0000-0000-000000000000
   current_status: Scheduled
   status_history: []
-  timing: 1/3 * * * * *
-  variables:
-    money!: Yeah!
-  tasks:
-  - !SetVariable
-    name: money!
-    value: No!
-  - !ParallelTask
+  agent: local
+  timing_cron: 1/3 * * * * *
+  variables: {}
+  task: !Sequential
     tasks:
     - !Print
-      message: Hello
+      message: Starting Process2
+    - !Parallel
+      tasks:
+      - !Print
+        message: '1'
+      - !Print
+        message: '2'
+      - !Print
+        message: '3'
+      - !Print
+        message: '4'
+      - !Print
+        message: '5'
+      - !Print
+        message: '6'
+      - !Print
+        message: '7'
+      - !Print
+        message: '8'
+      - !Print
+        message: '9'
     - !Print
-      message: World
-    - !Print
-      message: '1'
-    - !Print
-      message: '2'
-    - !Print
-      message: '3'
-    - !Print
-      message: '4'
-    - !Print
-      message: '5'
-    - !Print
-      message: '6'
-    - !Print
-      message: '7'
-    - !Print
-      message: '8'
-    - !Print
-      message: '9'
-  - !SetVariable
-    name: money!
-    value: Yeah!
-  - !PrintVariable
-    name: money!
-  - !Print
-    message: Completed Process2!
+      message: Completed Process2!
