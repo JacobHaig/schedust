@@ -57,18 +57,18 @@ async fn main() {
         "process1",
         "1/10 * * * * *",
         "local",
-        Task::Sequential(SequentialTask::new(vec![
-            Task::Print(PrintTask::new("SENDING EMAIL")).to_ref(),
-            Task::Email(EmailTask::new(
+        SequentialTask::new(vec![
+            PrintTask::new("SENDING EMAIL").to_task(),
+            EmailTask::new(
                 vec!["abc@gmail.com", "admin@admin.com"],
                 "ME",
                 "Test Subject!",
                 "Some Optional conditional message",
-            ))
-            .to_ref(),
-            Task::Print(PrintTask::new("Completed Process1!")).to_ref(),
-        ]))
-        .to_ref(),
+            )
+            .to_task(),
+            PrintTask::new("Completed Process1!").to_task(),
+        ])
+        .to_task(),
     )
     .to_ref();
 
@@ -76,23 +76,23 @@ async fn main() {
         "process2",
         "1/3 * * * * *",
         "local",
-        Task::Sequential(SequentialTask::new(vec![
-            Task::Print(PrintTask::new("Starting Process2")).to_ref(),
-            Task::Parallel(ParallelTask::new(vec![
-                Task::Print(PrintTask::new("1")).to_ref(),
-                Task::Print(PrintTask::new("2")).to_ref(),
-                Task::Print(PrintTask::new("3")).to_ref(),
-                Task::Print(PrintTask::new("4")).to_ref(),
-                Task::Print(PrintTask::new("5")).to_ref(),
-                Task::Print(PrintTask::new("6")).to_ref(),
-                Task::Print(PrintTask::new("7")).to_ref(),
-                Task::Print(PrintTask::new("8")).to_ref(),
-                Task::Print(PrintTask::new("9")).to_ref(),
-            ]))
-            .to_ref(),
-            Task::Print(PrintTask::new("Completed Process2!")).to_ref(),
-        ]))
-        .to_ref(),
+        SequentialTask::new(vec![
+            PrintTask::new("Starting Process2").to_task(),
+            ParallelTask::new(vec![
+                PrintTask::new("1").to_task(),
+                PrintTask::new("2").to_task(),
+                PrintTask::new("3").to_task(),
+                PrintTask::new("4").to_task(),
+                PrintTask::new("5").to_task(),
+                PrintTask::new("6").to_task(),
+                PrintTask::new("7").to_task(),
+                PrintTask::new("8").to_task(),
+                PrintTask::new("9").to_task(),
+            ])
+            .to_task(),
+            PrintTask::new("Completed Process2!").to_task(),
+        ])
+        .to_task(),
     )
     .to_ref();
 
@@ -107,7 +107,7 @@ async fn main() {
     let process_list: Processes = scheduler.get_process_list().await;
     tokio::task::spawn(server::start(process_list.clone()));
 
-    for _ in 0..40 {
+    for _ in 0..4 {
         scheduler.run_once().await;
         tokio::time::sleep(Duration::from_secs_f32(0.5)).await;
     }

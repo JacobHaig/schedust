@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::sync::{Arc, Mutex};
 
-use crate::tasks::TaskTrait;
+use super::Task;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct PrintTask {
@@ -17,22 +17,10 @@ impl PrintTask {
     pub fn to_ref(self) -> Arc<Mutex<Self>> {
         Arc::new(Mutex::new(self))
     }
-}
-
-impl TaskTrait for PrintTask {
-    fn run(&self) {
+    pub fn to_task(self) -> Arc<Mutex<Task>> {
+        Arc::new(Mutex::new(Task::Print(self)))
+    }
+    pub fn run(&self) {
         println!("{}", self.message);
-    }
-
-    fn get_name(&self) -> String {
-        todo!()
-    }
-
-    fn get_timing(&self) -> String {
-        todo!()
-    }
-
-    fn get_output(&self) -> String {
-        todo!()
     }
 }

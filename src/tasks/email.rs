@@ -1,8 +1,8 @@
 use std::sync::{Arc, Mutex};
 
-use crate::tasks::TaskTrait;
-
 use serde::{Deserialize, Serialize};
+
+use super::Task;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct EmailTask {
@@ -24,22 +24,10 @@ impl EmailTask {
     pub fn to_ref(self) -> Arc<Mutex<Self>> {
         Arc::new(Mutex::new(self))
     }
-}
-
-impl TaskTrait for EmailTask {
-    fn run(&self) {
+    pub fn to_task(self) -> Arc<Mutex<Task>> {
+        Arc::new(Mutex::new(Task::Email(self)))
+    }
+    pub fn run(&self) {
         println!("Sending email to {:?}", self.to);
-    }
-
-    fn get_name(&self) -> String {
-        todo!()
-    }
-
-    fn get_timing(&self) -> String {
-        todo!()
-    }
-
-    fn get_output(&self) -> String {
-        todo!()
     }
 }

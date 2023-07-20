@@ -3,7 +3,6 @@ use std::sync::{Arc, Mutex};
 use serde::{Deserialize, Serialize};
 
 use crate::tasks::Task;
-use crate::tasks::TaskTrait;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ParallelTask {
@@ -17,10 +16,12 @@ impl ParallelTask {
     pub fn to_ref(self) -> Arc<Mutex<Self>> {
         Arc::new(Mutex::new(self))
     }
-}
 
-impl TaskTrait for ParallelTask {
-    fn run(&self) {
+    pub fn to_task(self) -> Arc<Mutex<Task>> {
+        Arc::new(Mutex::new(Task::Parallel(self)))
+    }
+
+    pub fn run(&self) {
         // ParallelTask spins up its own threads
         // and dispatches tasks to them
         let mut handles = vec![];
@@ -32,7 +33,7 @@ impl TaskTrait for ParallelTask {
             let handle = std::thread::spawn(move || {
                 let task_locked = task_c.lock().unwrap();
 
-                task_locked.get_inner_task().run();
+                task_locked.run_task();
             });
             handles.push(handle);
         }
@@ -40,17 +41,5 @@ impl TaskTrait for ParallelTask {
         for handle in handles {
             handle.join().unwrap();
         }
-    }
-
-    fn get_name(&self) -> String {
-        todo!()
-    }
-
-    fn get_timing(&self) -> String {
-        todo!()
-    }
-
-    fn get_output(&self) -> String {
-        todo!()
     }
 }

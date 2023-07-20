@@ -2,6 +2,11 @@ use std::sync::{Arc, Mutex};
 
 use serde::{Deserialize, Serialize};
 
+use self::{
+    email::EmailTask, parrallel::ParallelTask, print::PrintTask, script::ScriptTask,
+    sequential::SequentialTask,
+};
+
 pub mod email;
 pub mod parrallel;
 pub mod print;
@@ -9,22 +14,15 @@ pub mod script;
 pub mod sequential;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
+// #[serde(untagged)]
+// #[serde(tag = "type")]
+
 pub enum Task {
-    Print(print::PrintTask),
-    Script(script::ScriptTask),
-    Email(email::EmailTask),
-    Parallel(parrallel::ParallelTask),
-    Sequential(sequential::SequentialTask),
-}
-
-pub trait TaskTrait {
-    fn run(&self);
-
-    fn get_name(&self) -> String;
-
-    fn get_timing(&self) -> String;
-
-    fn get_output(&self) -> String;
+    Print(PrintTask),
+    Script(ScriptTask),
+    Email(EmailTask),
+    Parallel(ParallelTask),
+    Sequential(SequentialTask),
 }
 
 impl Task {
@@ -33,16 +31,16 @@ impl Task {
     }
 
     pub fn run(&self) {
-        self.get_inner_task().run();
+        self.run_task();
     }
 
-    pub fn get_inner_task(&self) -> &dyn TaskTrait {
+    pub fn run_task(&self) {
         match self {
-            Task::Print(task) => task,
-            Task::Script(task) => task,
-            Task::Email(task) => task,
-            Task::Parallel(task) => task,
-            Task::Sequential(task) => task,
+            Task::Print(task) => task.run(),
+            Task::Script(task) => task.run(),
+            Task::Email(task) => task.run(),
+            Task::Parallel(task) => task.run(),
+            Task::Sequential(task) => task.run(),
         }
     }
 }

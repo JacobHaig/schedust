@@ -3,7 +3,6 @@ use std::sync::{Arc, Mutex};
 use serde::{Deserialize, Serialize};
 
 use crate::tasks::Task;
-use crate::tasks::TaskTrait;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SequentialTask {
@@ -17,29 +16,17 @@ impl SequentialTask {
     pub fn to_ref(self) -> Arc<Mutex<Self>> {
         Arc::new(Mutex::new(self))
     }
-}
-
-impl TaskTrait for SequentialTask {
-    fn run(&self) {
+    pub fn to_task(self) -> Arc<Mutex<Task>> {
+        Arc::new(Mutex::new(Task::Sequential(self)))
+    }
+    pub fn run(&self) {
         for task in &self.tasks {
             let task_c = task.clone();
             // let variables_c = variables.clone();
 
             let task_locked = task_c.lock().unwrap();
 
-            task_locked.get_inner_task().run();
+            task_locked.run_task();
         }
-    }
-
-    fn get_name(&self) -> String {
-        todo!()
-    }
-
-    fn get_timing(&self) -> String {
-        todo!()
-    }
-
-    fn get_output(&self) -> String {
-        todo!()
     }
 }

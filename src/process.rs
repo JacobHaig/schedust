@@ -5,7 +5,6 @@ use std::sync::Mutex;
 use uuid::Uuid;
 
 use crate::tasks::Task;
-use crate::tasks::TaskTrait;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub enum Status {
@@ -66,16 +65,7 @@ impl Process {
     // }
 
     pub fn run(&mut self) {
-        // println!("Running task: {}", self.name);
-        // self.current_status = crate::task::Status::ACTIVE;
-
-        // let output = self.command.run();
-
-        // This should be done in a separate thread
         self.task.clone().lock().unwrap().run();
-        // let task_lock = task.lock().unwrap();
-
-        // task_lock.get_inner_task().run();
     }
 
     /// Set the task's id.
