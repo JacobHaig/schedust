@@ -16,6 +16,10 @@
       from: ME
       subject: Test Subject!
       body: Some Optional conditional message
+    - !Delay
+      delay:
+        secs: 1
+        nanos: 0
     - !Print
       message: Completed Process1!
 - name: process2

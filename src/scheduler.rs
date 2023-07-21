@@ -20,12 +20,11 @@ impl<'a> Scheduler<'a> {
         let time_clone = process.lock().unwrap().timing_cron.clone();
         let process_clone = process.clone();
 
-        self.scheduler.add(job_scheduler::Job::new(
-            time_clone.parse().unwrap(),
-            move || {
-                process_clone.lock().unwrap().run();
-            },
-        ));
+        let job = job_scheduler::Job::new(time_clone.parse().unwrap(), move || {
+            process_clone.lock().unwrap().run();
+        });
+
+        self.scheduler.add(job);
 
         self.processes.lock().unwrap().push(process);
     }

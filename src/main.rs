@@ -22,8 +22,8 @@ use scheduler::Processes;
 use process::Process;
 
 use crate::tasks::{
-    email::EmailTask, parrallel::ParallelTask, print::PrintTask, script::ScriptTask,
-    sequential::SequentialTask, Task,
+    delay::DelayTask, email::EmailTask, parrallel::ParallelTask, print::PrintTask,
+    script::ScriptTask, sequential::SequentialTask, Task,
 };
 
 // use task::Task;
@@ -55,7 +55,7 @@ async fn main() {
     // Create a new task
     let process1 = Process::new(
         "process1",
-        "1/10 * * * * *",
+        "* * * * * *",
         "local",
         SequentialTask::new(vec![
             PrintTask::new("SENDING EMAIL").to_task(),
@@ -78,15 +78,23 @@ async fn main() {
         "local",
         SequentialTask::new(vec![
             PrintTask::new("Starting Process2").to_task(),
-            ParallelTask::new(vec![
+            SequentialTask::new(vec![
                 PrintTask::new("1").to_task(),
+                DelayTask::new(Duration::from_secs_f32(0.5)).to_task(),
                 PrintTask::new("2").to_task(),
+                DelayTask::new(Duration::from_secs_f32(0.5)).to_task(),
                 PrintTask::new("3").to_task(),
+                DelayTask::new(Duration::from_secs_f32(0.5)).to_task(),
                 PrintTask::new("4").to_task(),
+                DelayTask::new(Duration::from_secs_f32(0.5)).to_task(),
                 PrintTask::new("5").to_task(),
+                DelayTask::new(Duration::from_secs_f32(0.5)).to_task(),
                 PrintTask::new("6").to_task(),
+                DelayTask::new(Duration::from_secs_f32(0.5)).to_task(),
                 PrintTask::new("7").to_task(),
+                DelayTask::new(Duration::from_secs_f32(0.5)).to_task(),
                 PrintTask::new("8").to_task(),
+                DelayTask::new(Duration::from_secs_f32(0.5)).to_task(),
                 PrintTask::new("9").to_task(),
             ])
             .to_task(),
@@ -107,16 +115,16 @@ async fn main() {
     let process_list: Processes = scheduler.get_process_list().await;
     tokio::task::spawn(server::start(process_list.clone()));
 
-    for _ in 0..4 {
+    for _ in 0..40 {
         scheduler.run_once().await;
         tokio::time::sleep(Duration::from_secs_f32(0.5)).await;
     }
 
     use std::io::Write;
-    let p = scheduler.get_process_list().await;
-    let s = serde_yaml::to_string(&p).unwrap();
-    let mut f = File::create("results.yaml").unwrap();
-    write!(f, "{}", s).unwrap();
+    let processes = scheduler.get_process_list().await;
+    let s = serde_yaml::to_string(&processes).unwrap();
+    let mut file = File::create("results.yaml").unwrap();
+    write!(file, "{}", s).unwrap();
 
     // scheduler.write_tasks_json("task.json").await;
     // scheduler.write_tasks_yaml("task.yaml").await;

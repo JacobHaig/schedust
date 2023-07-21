@@ -3,10 +3,11 @@ use std::sync::{Arc, Mutex};
 use serde::{Deserialize, Serialize};
 
 use self::{
-    email::EmailTask, parrallel::ParallelTask, print::PrintTask, script::ScriptTask,
-    sequential::SequentialTask,
+    delay::DelayTask, email::EmailTask, parrallel::ParallelTask, print::PrintTask,
+    script::ScriptTask, sequential::SequentialTask,
 };
 
+pub mod delay;
 pub mod email;
 pub mod parrallel;
 pub mod print;
@@ -23,6 +24,7 @@ pub enum Task {
     Email(EmailTask),
     Parallel(ParallelTask),
     Sequential(SequentialTask),
+    Delay(DelayTask),
 }
 
 impl Task {
@@ -41,6 +43,7 @@ impl Task {
             Task::Email(task) => task.run(),
             Task::Parallel(task) => task.run(),
             Task::Sequential(task) => task.run(),
+            Task::Delay(task) => task.run(),
         }
     }
 }
