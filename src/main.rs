@@ -80,21 +80,21 @@ async fn main() {
             PrintTask::new("Starting Process2").to_task(),
             SequentialTask::new(vec![
                 PrintTask::new("1").to_task(),
-                DelayTask::new(Duration::from_secs_f32(0.5)).to_task(),
+                DelayTask::new(Duration::from_secs(1)).to_task(),
                 PrintTask::new("2").to_task(),
-                DelayTask::new(Duration::from_secs_f32(0.5)).to_task(),
+                DelayTask::new(Duration::from_secs(1)).to_task(),
                 PrintTask::new("3").to_task(),
-                DelayTask::new(Duration::from_secs_f32(0.5)).to_task(),
+                DelayTask::new(Duration::from_secs(1)).to_task(),
                 PrintTask::new("4").to_task(),
-                DelayTask::new(Duration::from_secs_f32(0.5)).to_task(),
+                DelayTask::new(Duration::from_secs(1)).to_task(),
                 PrintTask::new("5").to_task(),
-                DelayTask::new(Duration::from_secs_f32(0.5)).to_task(),
+                DelayTask::new(Duration::from_secs(1)).to_task(),
                 PrintTask::new("6").to_task(),
-                DelayTask::new(Duration::from_secs_f32(0.5)).to_task(),
+                DelayTask::new(Duration::from_secs(1)).to_task(),
                 PrintTask::new("7").to_task(),
-                DelayTask::new(Duration::from_secs_f32(0.5)).to_task(),
+                DelayTask::new(Duration::from_secs(1)).to_task(),
                 PrintTask::new("8").to_task(),
-                DelayTask::new(Duration::from_secs_f32(0.5)).to_task(),
+                DelayTask::new(Duration::from_secs(1)).to_task(),
                 PrintTask::new("9").to_task(),
             ])
             .to_task(),
@@ -108,16 +108,16 @@ async fn main() {
     let mut scheduler = scheduler::Scheduler::new().await;
 
     // Add the task to the scheduler
-    scheduler.add_process(process1.clone()).await;
     scheduler.add_process(process2.clone()).await;
+    scheduler.add_process(process1.clone()).await;
 
     // Run the web-server
     let process_list: Processes = scheduler.get_process_list().await;
     tokio::task::spawn(server::start(process_list.clone()));
 
-    for _ in 0..40 {
+    for _ in 0..4 {
         scheduler.run_once().await;
-        tokio::time::sleep(Duration::from_secs_f32(0.5)).await;
+        tokio::time::sleep(Duration::from_secs(1)).await;
     }
 
     use std::io::Write;
