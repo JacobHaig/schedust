@@ -6,14 +6,12 @@ use super::Task;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct DelayTask {
-    pub delay: Duration,
+    pub delay: u64,
 }
 
 impl DelayTask {
-    pub fn new(delay: Duration) -> Self {
-        DelayTask {
-            delay: delay.into(),
-        }
+    pub fn new(delay: u64) -> Self {
+        DelayTask { delay }
     }
 
     pub fn to_ref(self) -> Arc<Mutex<Self>> {
@@ -23,6 +21,6 @@ impl DelayTask {
         Arc::new(Mutex::new(Task::Delay(self)))
     }
     pub fn run(&self) {
-        std::thread::sleep(self.delay);
+        std::thread::sleep(Duration::from_secs(self.delay));
     }
 }

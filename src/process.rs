@@ -69,7 +69,7 @@ impl Process {
     }
 
     /// Set the task's id.
-    pub fn set_id(&mut self, id: Uuid) {
+    pub fn _set_id(&mut self, id: Uuid) {
         self.id = id;
     }
 
