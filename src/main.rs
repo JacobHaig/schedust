@@ -1,57 +1,18 @@
-// Scheduler, and trait for .seconds(), .minutes(), etc.
-// use clokwerk::{Scheduler, TimeUnits};
-// Import week days and WeekDay
-// use clokwerk::{Interval, Scheduler};
-// use job_scheduler::{Job, JobScheduler};
-// use std::fs::write;
-// use serde::{Deserialize, Serialize};
-// use std::process::Command;
-
-// use std::sync::Arc;
-// use std::sync::Mutex;
+use std::{fs::File, time::Duration};
 
 mod process;
 mod scheduler;
 mod server;
 mod tasks;
-
-use std::{fs::File, time::Duration};
-
-use scheduler::Processes;
-
-use process::Process;
-
 use crate::tasks::{
     delay::DelayTask, email::EmailTask, parrallel::ParallelTask, print::PrintTask,
     script::ScriptTask, sequential::SequentialTask, Task,
 };
-
-// use task::Task;
-// use once_cell::sync::Lazy;
-
-// static mut RUNNING: Lazy<bool> = Lazy::new(|| true);
+use process::Process;
+use scheduler::Processes;
 
 #[tokio::main]
 async fn main() {
-    // let running = Arc::new(AtomicBool::new(true));
-    // let running = Arc::new(AtomicBool::new(true));
-    // let r = running.clone();
-
-    // ctrlc::set_handler(|| unsafe {
-    //     *RUNNING = false;
-    // })
-    // .expect("Error setting Ctrl-C handler");
-
-    /*
-    println!("Waiting for Ctrl-C...");
-    while unsafe { *RUNNING } {
-        // Keep running until Ctrl-C is pressed
-    }
-    println!("Exiting...");
-    */
-
-    // let a = tasks::print::Print::new("Hello");
-
     // Create a new task
     let process1 = Process::new(
         "process1",

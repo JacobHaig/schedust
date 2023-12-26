@@ -38,6 +38,10 @@ impl<'a> Scheduler<'a> {
         self.scheduler.tick();
     }
 
+    pub async fn run(&mut self) {
+        // self.scheduler.
+    }
+
     pub async fn get_process_list(&self) -> Processes {
         self.processes.clone()
     }
