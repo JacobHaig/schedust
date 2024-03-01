@@ -28,6 +28,6 @@ impl EmailTask {
         Arc::new(Mutex::new(Task::Email(self)))
     }
     pub fn run(&self) {
-        println!("Sending email to {:?}", self.to);
+        println!("[MOCK] Sending email to {:?}", self.to);
     }
 }
