@@ -1,21 +1,28 @@
-use serde::{Deserialize, Serialize};
+use serde::{de, Deserialize, Serialize};
 use std::{
+    default,
     process::Command,
     sync::{Arc, Mutex},
 };
 
 use super::Task;
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, Default)]
 
 pub struct ScriptTask {
     command: String,
     env: String,
+
+    description: Option<String>,
 }
 
 impl ScriptTask {
     pub fn new(command: String, env: String) -> Self {
-        ScriptTask { command, env }
+        ScriptTask {
+            command,
+            env,
+            ..default::Default::default()
+        }
     }
     pub fn to_ref(self) -> Arc<Mutex<Self>> {
         Arc::new(Mutex::new(self))
@@ -26,11 +33,19 @@ impl ScriptTask {
     }
 
     pub fn run(&self) {
-        Command::new(&self.command)
+        let result = Command::new(&self.command)
             // .arg("-c")
             // .arg(&self.command)
             .current_dir(&self.env)
-            .output()
-            .expect("failed to execute process");
+            .output();
+
+        match result {
+            Ok(output) => {
+                println!("Output: {}", String::from_utf8_lossy(&output.stdout));
+            }
+            Err(e) => {
+                println!("Error: {}", e);
+            }
+        }
     }
 }

@@ -39,7 +39,11 @@ impl<'a> Scheduler<'a> {
     }
 
     pub async fn run(&mut self) {
-        // self.scheduler.
+        loop {
+            self.run_once().await;
+            let time = self.scheduler.time_till_next_job();
+            tokio::time::sleep(time).await;
+        }
     }
 
     pub async fn get_process_list(&self) -> Processes {

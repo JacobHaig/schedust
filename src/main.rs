@@ -1,4 +1,9 @@
-use std::{fs::File, time::Duration};
+use std::{
+    fs::{read_to_string, File},
+    io::Read,
+    sync::Arc,
+    time::Duration,
+};
 
 mod process;
 mod scheduler;
@@ -10,6 +15,7 @@ use crate::tasks::{
 };
 use process::Process;
 use scheduler::Processes;
+use std::sync::Mutex;
 
 #[tokio::main]
 async fn main() {
@@ -39,7 +45,7 @@ async fn main() {
         "local",
         SequentialTask::new(vec![
             PrintTask::new("Starting Process2").to_task(),
-            SequentialTask::new(vec![
+            ParallelTask::new(vec![
                 PrintTask::new("1").to_task(),
                 DelayTask::new(1).to_task(),
                 PrintTask::new("2").to_task(),
@@ -65,28 +71,31 @@ async fn main() {
     )
     .to_ref();
 
+    use std::io::Write;
+    let s = serde_yaml::to_string(&process2).unwrap();
+    let mut file = File::create("results.yaml").unwrap();
+    write!(file, "{}", s).unwrap();
+
+    let processes_str = std::fs::read_to_string("task.yaml").unwrap();
+    let processes: Vec<Process> = serde_yaml::from_str(&processes_str).unwrap();
+
     // Create a new scheduler
     let mut scheduler = scheduler::Scheduler::new().await;
 
     // Add the task to the scheduler
-    scheduler.add_process(process2.clone()).await;
-    scheduler.add_process(process1.clone()).await;
+    for process in processes {
+        scheduler.add_process(process.to_ref()).await;
+    }
 
     // Run the web-server
     let process_list: Processes = scheduler.get_process_list().await;
     tokio::task::spawn(server::start(process_list.clone()));
 
-    for _ in 0..4 {
-        scheduler.run_once().await;
-        tokio::time::sleep(Duration::from_secs(1)).await;
-    }
+    // for _ in 0..4 {
+    //     scheduler.run_once().await;
+    //     tokio::time::sleep(Duration::from_secs(1)).await;
+    // }
 
-    use std::io::Write;
-    let processes = scheduler.get_process_list().await;
-    let s = serde_yaml::to_string(&processes).unwrap();
-    let mut file = File::create("results.yaml").unwrap();
-    write!(file, "{}", s).unwrap();
-
-    // scheduler.write_tasks_json("task.json").await;
-    // scheduler.write_tasks_yaml("task.yaml").await;
+    // Run indefinitely
+    scheduler.run().await;
 }
