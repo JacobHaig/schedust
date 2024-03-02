@@ -4,7 +4,7 @@ use std::sync::Mutex;
 
 use uuid::Uuid;
 
-use crate::tasks::Task;
+use crate::shared::tasks::Task;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub enum Status {

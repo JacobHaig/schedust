@@ -2,44 +2,31 @@ use std::sync::{Arc, Mutex};
 
 use serde::{Deserialize, Serialize};
 
-use crate::tasks::Task;
+use crate::shared::tasks::Task;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct ParallelTask {
+pub struct SequentialTask {
     pub tasks: Vec<Arc<Mutex<Task>>>,
 }
 
-impl ParallelTask {
+impl SequentialTask {
     pub fn new(tasks: Vec<Arc<Mutex<Task>>>) -> Self {
         Self { tasks }
     }
     pub fn to_ref(self) -> Arc<Mutex<Self>> {
         Arc::new(Mutex::new(self))
     }
-
     pub fn to_task(self) -> Arc<Mutex<Task>> {
-        Arc::new(Mutex::new(Task::Parallel(self)))
+        Arc::new(Mutex::new(Task::Sequential(self)))
     }
-
     pub fn run(&self) {
-        // ParallelTask spins up its own threads
-        // and dispatches tasks to them
-        let mut handles = vec![];
-
         for task in &self.tasks {
             let task_c = task.clone();
             // let variables_c = variables.clone();
 
-            let handle = std::thread::spawn(move || {
-                let task_locked = task_c.lock().unwrap();
+            let task_locked = task_c.lock().unwrap();
 
-                task_locked.run_task();
-            });
-            handles.push(handle);
-        }
-
-        for handle in handles {
-            handle.join().unwrap();
+            task_locked.run_task();
         }
     }
 }

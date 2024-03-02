@@ -1,6 +1,6 @@
 use std::sync::{Arc, Mutex};
 
-use crate::process::Process;
+use crate::shared::process::Process;
 
 pub type Processes = Vec<Arc<Mutex<Process>>>;
 pub struct Scheduler<'a> {
