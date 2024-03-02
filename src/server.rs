@@ -1,22 +1,26 @@
-// extern crate schedust;
-
-// mod crate::shared::process;
-
-// mod shared::process;
-// mod tasks;
-
-mod scheduler;
-mod shared;
-mod webserver;
+pub mod scheduler;
+pub mod webserver;
+pub mod shared {
+    pub mod process;
+    pub mod tasks {
+        pub mod delay;
+        pub mod email;
+        pub mod parrallel;
+        pub mod print;
+        pub mod script;
+        pub mod sequential;
+        pub mod task;
+    }
+}
 
 use std::fs::File;
 
+use crate::scheduler::Processes;
 use crate::shared::process::Process;
 use crate::shared::tasks::{
     delay::DelayTask, email::EmailTask, parrallel::ParallelTask, print::PrintTask,
-    script::ScriptTask, sequential::SequentialTask, Task,
+    script::ScriptTask, sequential::SequentialTask, task::Task,
 };
-use scheduler::Processes;
 
 #[tokio::main]
 async fn main() {

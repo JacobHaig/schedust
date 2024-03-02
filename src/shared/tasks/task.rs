@@ -2,17 +2,10 @@ use std::sync::{Arc, Mutex};
 
 use serde::{Deserialize, Serialize};
 
-use self::{
+use crate::shared::tasks::{
     delay::DelayTask, email::EmailTask, parrallel::ParallelTask, print::PrintTask,
     script::ScriptTask, sequential::SequentialTask,
 };
-
-pub mod delay;
-pub mod email;
-pub mod parrallel;
-pub mod print;
-pub mod script;
-pub mod sequential;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 // #[serde(untagged)]

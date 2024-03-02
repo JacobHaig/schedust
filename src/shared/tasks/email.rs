@@ -2,7 +2,7 @@ use std::sync::{Arc, Mutex};
 
 use serde::{Deserialize, Serialize};
 
-use super::Task;
+use crate::shared::tasks::task::Task;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct EmailTask {

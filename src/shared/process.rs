@@ -1,10 +1,10 @@
-use serde::{Deserialize, Serialize};
+use crate::shared::tasks::task::Task;
+
 use std::sync::Arc;
 use std::sync::Mutex;
 
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
-
-use crate::shared::tasks::Task;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub enum Status {

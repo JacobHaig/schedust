@@ -5,7 +5,7 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-use super::Task;
+use crate::shared::tasks::task::Task;
 
 #[derive(Clone, Debug, Serialize, Deserialize, Default)]
 

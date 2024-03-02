@@ -1,8 +1,9 @@
-use serde::{Deserialize, Serialize};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
-use super::Task;
+use serde::{Deserialize, Serialize};
+
+use crate::shared::tasks::task::Task;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct DelayTask {
