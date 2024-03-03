@@ -7,7 +7,7 @@ edition = "2021"
 
 [[bin]]
 name = "server"
-path = "src/server.rs"
+path = "src/server/main.rs"
 
 [dependencies]
 # clokwerk = "0.3.5"

@@ -1,23 +1,9 @@
-pub mod scheduler;
-pub mod webserver;
-pub mod shared {
-    pub mod process;
-    pub mod tasks {
-        pub mod delay;
-        pub mod email;
-        pub mod parrallel;
-        pub mod print;
-        pub mod script;
-        pub mod sequential;
-        pub mod task;
-    }
-}
-
 use std::fs::File;
 
-use crate::scheduler::Processes;
-use crate::shared::process::Process;
-use crate::shared::tasks::{
+use schedust::server::scheduler::Processes;
+use schedust::shared::process::Process;
+
+use schedust::shared::tasks::{
     delay::DelayTask, email::EmailTask, parrallel::ParallelTask, print::PrintTask,
     script::ScriptTask, sequential::SequentialTask, task::Task,
 };
@@ -85,7 +71,7 @@ async fn main() {
     let processes: Vec<Process> = serde_yaml::from_str(&processes_str).unwrap();
 
     // Create a new scheduler
-    let mut scheduler = scheduler::Scheduler::new().await;
+    let mut scheduler = schedust::server::scheduler::Scheduler::new().await;
 
     // Add the task to the scheduler
     for process in processes {
@@ -94,7 +80,7 @@ async fn main() {
 
     // Run the web-server
     let process_list: Processes = scheduler.get_process_list().await;
-    tokio::task::spawn(webserver::start(process_list.clone()));
+    tokio::task::spawn(schedust::server::webserver::start(process_list.clone()));
 
     // for _ in 0..4 {
     //     scheduler.run_once().await;

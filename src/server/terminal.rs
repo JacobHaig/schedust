@@ -4,7 +4,7 @@ pub static mut RUNNING: Lazy<bool> = Lazy::new(|| true);
 
 pub struct Terminal {
     // sx: tokio::sync::mpsc::Sender<String>,
-// rx: tokio::sync::mpsc::Receiver<String>,
+    // rx: tokio::sync::mpsc::Receiver<String>,
 }
 
 impl Terminal {

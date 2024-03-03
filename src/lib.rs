@@ -11,6 +11,7 @@ pub mod shared {
     }
 }
 
-pub mod scheduler;
-// pub mod terminal;
-pub mod webserver;
+pub mod server {
+    pub mod scheduler;
+    pub mod webserver;
+}
