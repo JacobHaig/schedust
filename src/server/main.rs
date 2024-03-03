@@ -5,8 +5,10 @@ use schedust::shared::process::Process;
 
 use schedust::shared::tasks::{
     delay::DelayTask, email::EmailTask, parrallel::ParallelTask, print::PrintTask,
-    script::ScriptTask, sequential::SequentialTask, task::Task,
+    script::ScriptTask, sequential::SequentialTask,
 };
+
+use schedust::shared::task::Task;
 
 #[tokio::main]
 async fn main() {

@@ -3,7 +3,7 @@ use std::time::Duration;
 
 use serde::{Deserialize, Serialize};
 
-use crate::shared::tasks::task::Task;
+use crate::shared::task::Task;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct DelayTask {

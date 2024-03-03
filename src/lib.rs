@@ -1,5 +1,6 @@
 pub mod shared {
     pub mod process;
+    pub mod task;
     pub mod tasks {
         pub mod delay;
         pub mod email;
@@ -7,7 +8,6 @@ pub mod shared {
         pub mod print;
         pub mod script;
         pub mod sequential;
-        pub mod task;
     }
 }
 

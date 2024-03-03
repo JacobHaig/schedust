@@ -1,4 +1,4 @@
-use crate::shared::tasks::task::Task;
+use crate::shared::task::Task;
 
 use std::sync::Arc;
 use std::sync::Mutex;

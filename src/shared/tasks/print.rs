@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::sync::{Arc, Mutex};
 
-use crate::shared::tasks::task::Task;
+use crate::shared::task::Task;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct PrintTask {
